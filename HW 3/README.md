@@ -1,6 +1,6 @@
 ## Problem 2
 
-(a) train CNN
+(a) train CNN (make sure to apply dataset normalization)
 - [ ] (i) adam optimizer
 - [ ] (ii) SGD with nesterov momentum
 
