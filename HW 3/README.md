@@ -9,6 +9,7 @@ then apply
 - [ ] xavier initialization
 - [ ] data augmentation
 - [ ] dropout
+- [ ] batch normalization
 - [ ] learning rate scheduler
 
 (c) choose best model from (b).
