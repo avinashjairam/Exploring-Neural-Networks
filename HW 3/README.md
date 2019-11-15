@@ -5,13 +5,14 @@
 - [ ] (ii) SGD with nesterov momentum
 
 (b) choose best model from (a).
-apply
+then apply
 - [ ] xavier initialization
 - [ ] data augmentation
 - [ ] dropout
 - [ ] learning rate scheduler
 
 (c) choose best model from (b).
+then
 
 - [ ] (i) display training and validation losses and accuracies
 - [ ] (ii) show four randomly augmented images from each class
