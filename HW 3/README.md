@@ -1,6 +1,6 @@
 ## Problem 2
 
-(a) train CNN (make sure to apply dataset normalization)
+(a) train CNN (make sure to apply dataset normalization and dropout)
 - [ ] (i) adam optimizer
 - [ ] (ii) SGD with nesterov momentum
 
@@ -8,7 +8,6 @@
 then apply
 - [ ] xavier initialization
 - [ ] data augmentation
-- [ ] dropout
 - [ ] batch normalization
 - [ ] learning rate scheduler
 
