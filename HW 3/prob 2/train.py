@@ -1,67 +1,112 @@
 import torch
+from torch import nn, optim
 from tqdm import tqdm
+import codecs
+import os
+
+from torch.utils.data import DataLoader
 from model_utils import MyConvNet
 from data_utils import MyDataset
-from training_utils import save_checkpoint, load_checkpoint
+from training_utils import (
+    save_checkpoint,
+    train,
+    validate,
+    print_model_details
+)
 
+if __name__ == "__main__":
 
-def train(model, data_loader, criterion, optimizer, curr_epoch, tot_epochs, device=torch.device('cpu')):
-    """
-    train for an epoch
-    :param model: (torch.nn.module) model
-    :param data_loader: (torch.data.Dataloader) data loader
-    :param optimizer: (torch.optim) optimizer
-    :param criterion: (torch.nn.module) criterion
-    :param curr_epoch: current epoch
-    :param tot_epochs: total number of epochs
-    :param device: (torch.device) device (default: torch.device('cpu'))
-    :return: training loss, training acc
-    """
+    num_classes = 20
+    num_epochs = 10
+    learning_rate = 1e-3
+    batch_size = 64
+    data_dir = "data"
+    ckpt_dir = "models/adam_optimizer"
 
-    # set model to training mode
-    model.train()
+    # set device
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-    # progress meter
-    tqdm_meter = tqdm(
-        data_loader,
-        desc=f'[Epoch {curr_epoch}/{tot_epochs}]',
-        unit=' batches'
+    # set random seed
+    torch.manual_seed(123) if device == torch.device('cuda:0') \
+        else torch.cuda.manual_seed(123)
+
+    # data file paths
+    filepaths = {}
+    for category in ['train', 'val']:
+        with codecs.open(os.path.join(data_dir, f'{category}.txt'),
+                         'r', encoding='utf-8') as f:
+            filepaths[category] = list(map(str.strip, f.readlines()))
+
+    tqdm.write('number of samples:')
+    for category in ['train', 'val']:
+        tqdm.write(f'{category}: {len(filepaths[category])}')
+
+    # datasets
+    datasets = {}
+    for category in ['train', 'val']:
+        datasets[category] = MyDataset(filepaths=filepaths[category])
+
+    # data loaders
+    train_loader = DataLoader(datasets['train'], batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(datasets['val'], batch_size=batch_size, shuffle=True)
+
+    # model
+    model = MyConvNet(num_classes=num_classes)
+
+    # transfer model to device
+    model = model.to(device)
+
+    # print model details
+    print_model_details(model)
+
+    # criterion
+    criterion = nn.CrossEntropyLoss()
+
+    # optimizer
+    optimizer = optim.Adam(
+        [p for p in model.parameters() if p.requires_grad],
+        lr=learning_rate
     )
 
-    corrects = 0
-    total = 0
-    tot_loss = 0
+    best_val_acc = -1
+    best_epoch = -1
+    # train for epochs
+    for epoch in range(1, num_epochs + 1):
+        # train
+        train_loss, train_acc = train(
+            model, train_loader,
+            criterion, optimizer,
+            epoch, num_epochs, device
+        )
+        # validate
+        val_loss, val_acc = validate(
+            model, val_loader,
+            criterion, device
+        )
 
-    for idx, (image, label) in enumerate(tqdm_meter):
-        # transfer to device
-        image, label = image.to(device), label.to(device)
+        if val_acc >= best_val_acc:
+            tqdm.write('    - found new best validation accuracy')
+            best_val_acc = val_acc
+            best_epoch = epoch
+            is_best = True
+        else:
+            is_best = False
 
-        # zero out gradients
-        optimizer.zero_grad()
+        # current state
+        state = {
+            'state_dict': model.state_dict(),
+            'optim_dict': optimizer.state_dict(),
+            'epoch': epoch,
+            'val loss': val_loss,
+            'val acc': val_acc,
+            'train loss': train_loss,
+            'train acc': train_acc,
+            'best val acc so far': best_val_acc,
+            'best epoch so far': best_epoch
+        }
 
-        # forward pass
-        out = model(image)
+        # save state
+        save_checkpoint(state, is_best, ckpt_dir)
 
-        # compute loss
-        loss = criterion(out, label)
-
-        # update total loss
-        tot_loss = tot_loss + loss.item()
-
-        # update tqdm meter
-        tqdm_meter.set_postfix(f'')
-
-        # backward
-        loss.backward()
-
-        # optimizer step
-        optimizer.step()
-
-        # compute prediction
-        pred = torch.multinomial(out, -1)
-
-        # compute number of correct predictions and update corrects
-        corrects = corrects + (pred == label).sum().item()
-
-        total = total + label.shape[0]
-        # TODO
+    tqdm.write(f'max validation accuracy {best_val_acc} % '
+               f'was obtained after {best_epoch} epochs')
