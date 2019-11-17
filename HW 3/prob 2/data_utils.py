@@ -27,7 +27,7 @@ class MyDataset(Dataset):
             # open image
             image = Image.open(filepath)  # PIL image
 
-            # resize
+            # resize to 128 x 128
             image = image.resize((128, 128), PIL.Image.ANTIALIAS)
 
             # apply transforms
