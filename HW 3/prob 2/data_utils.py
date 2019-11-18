@@ -37,6 +37,11 @@ class MyDataset(Dataset):
             # resize to 128 x 128
             image = image.resize((128, 128), PIL.Image.ANTIALIAS)
 
+            # convert to RGB
+            # (this converts RGBA images to RGB)
+            # (this does not have affect on images which are already RGB)
+            image = image.convert("RGB")
+
             # apply transforms
             image = self.transform(image)
 
@@ -58,5 +63,8 @@ class MyDataset(Dataset):
 
 
 if __name__ == "__main__":
-    filepaths = ['data/frog/1.jpg', 'data/frog/2.jpg', 'data/deer/1.jpg']
+    filepaths = ['data/black_bear/1.jpg',
+                 'data/black_bear/2.jpg',
+                 'data/bald_eagle/1.jpg',
+                 'data/bald_eagle/6b9b6fa9e5c3c4e803.png']
     dataset = MyDataset(filepaths=filepaths)
