@@ -10,16 +10,7 @@ class MyDataset(Dataset):
         self.filepaths = filepaths
 
         self.class_to_idx = {
-            'bald_eagle': 0, 'black_bear': 1,
-            'bobcat': 2, 'canada_lynx': 3,
-            'columbian_black-tailed_deer': 4, 'cougar': 5,
-            'coyote': 6, 'deer': 7,
-            'elk': 8, 'gray_fox': 9,
-            'gray_wolf': 10, 'mountain_beaver': 11,
-            'nutria': 12, 'raccoon': 13,
-            'raven': 14, 'red_fox': 15,
-            'ringtail': 16, 'sea_lions': 17,
-            'seals': 18, 'virginia_opossum': 19
+            f'{no}': no for no in range(42 + 1)
         }
 
         self.transform = transforms.Compose(
@@ -63,8 +54,11 @@ class MyDataset(Dataset):
 
 
 if __name__ == "__main__":
-    filepaths = ['data/black_bear/1.jpg',
-                 'data/black_bear/2.jpg',
-                 'data/bald_eagle/1.jpg',
-                 'data/bald_eagle/6b9b6fa9e5c3c4e803.png']
+    filepaths = [
+        "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00007.png",
+        "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00008.png",
+        "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00009.png",
+        "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00010.png",
+        "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00011.png"
+    ]
     dataset = MyDataset(filepaths=filepaths)
