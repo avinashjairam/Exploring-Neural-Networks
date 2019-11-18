@@ -9,11 +9,18 @@ class MyDataset(Dataset):
     def __init__(self, filepaths):
         self.filepaths = filepaths
 
-        self.class_to_idx = {'frog': 0, 'truck': 1,
-                             'deer': 2, 'automobile': 3,
-                             'bird': 4, 'horse': 5,
-                             'ship': 6, 'cat': 7,
-                             'dog': 8, 'airplane': 9}
+        self.class_to_idx = {
+            'bald_eagle': 0, 'black_bear': 1,
+            'bobcat': 2, 'canada_lynx': 3,
+            'columbian_black-tailed_deer': 4, 'cougar': 5,
+            'coyote': 6, 'deer': 7,
+            'elk': 8, 'gray_fox': 9,
+            'gray_wolf': 10, 'mountain_beaver': 11,
+            'nutria': 12, 'raccoon': 13,
+            'raven': 14, 'red_fox': 15,
+            'ringtail': 16, 'sea_lions': 17,
+            'seals': 18, 'virginia_opossum': 19
+        }
 
         self.transform = transforms.Compose(
             [
