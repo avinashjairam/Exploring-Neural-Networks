@@ -24,6 +24,13 @@ if __name__ == "__main__":
     data_dir = "data"
     ckpt_dir = "models/adam_optimizer"
 
+    logger = {
+        'train losses': [],
+        'val losses': [],
+        'train accs': [],
+        'val accs': []
+    }
+
     # set device
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -82,6 +89,7 @@ if __name__ == "__main__":
     best_val_acc = -1
     best_epoch = -1
     # train for epochs
+    tqdm.write('training..')
     for epoch in range(1, num_epochs + 1):
         # train
         train_loss, train_acc = train(
@@ -94,6 +102,12 @@ if __name__ == "__main__":
             model, val_loader,
             criterion, device
         )
+
+        # add losses and accs to logger
+        logger['train losses'].append(train_loss)
+        logger['val losses'].append(val_loss)
+        logger['train accs'].append(train_acc)
+        logger['val accs'].append(val_acc)
 
         if val_acc >= best_val_acc:
             tqdm.write('    - found new best validation accuracy')
@@ -119,5 +133,10 @@ if __name__ == "__main__":
         # save state
         save_checkpoint(state, is_best, ckpt_dir)
 
-    tqdm.write(f'max validation accuracy {best_val_acc} % '
+    # save logger
+    tqdm.write('dumping logger to pickle file..')
+    with open(f'{ckpt_dir}/logger.pkl', 'wb') as f:
+        pickle.dump(logger, f)
+
+    tqdm.write(f'max validation accuracy {best_val_acc:0.2f} % '
                f'was obtained after {best_epoch} epochs')
