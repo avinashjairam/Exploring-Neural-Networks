@@ -3,6 +3,7 @@ from torch import nn, optim
 from tqdm import tqdm
 import codecs
 import os
+import pickle
 
 from torch.utils.data import DataLoader
 from model_utils import MyConvNet
@@ -44,7 +45,17 @@ if __name__ == "__main__":
     # datasets
     datasets = {}
     for category in ['train', 'val']:
-        datasets[category] = MyDataset(filepaths=filepaths[category])
+        if os.path.exists(f'{data_dir}/{category}.pkl'):
+            # load dataset from pickle file
+            tqdm.write(f'loading {category} dataset from pickle file..')
+            with open(f'{data_dir}/{category}.pkl', 'rb') as f:
+                datasets[category] = pickle.load(f)
+        else:
+            datasets[category] = MyDataset(filepaths=filepaths[category])
+            # dump
+            tqdm.write(f'writing {category} dataset to pickle file..')
+            with open(f'{data_dir}/{category}.pkl', 'wb') as f:
+                pickle.dump(datasets[category], f)
 
     # data loaders
     train_loader = DataLoader(datasets['train'], batch_size=batch_size, shuffle=True)
