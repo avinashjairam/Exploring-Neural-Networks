@@ -6,8 +6,8 @@ import os
 import dill as pickle
 
 from torch.utils.data import DataLoader
-from model_utils import MyConvNet
-from data_utils import MyDataset
+from model_utils import TrafficSignsConvNet
+from data_utils import TrafficSignsDataset
 from training_utils import (
     save_checkpoint,
     train,
@@ -18,9 +18,10 @@ from training_utils import (
 if __name__ == "__main__":
 
     num_classes = 5
-    num_epochs = 20
+    num_epochs = 30
     learning_rate = 1e-3
     batch_size = 64
+    dropout_prob = 0.3
     data_dir = "data/gtsrb-german-traffic-sign/Train"
     ckpt_dir = "models/adam_optimizer"
 
@@ -59,7 +60,7 @@ if __name__ == "__main__":
             with open(f'{data_dir}/{category}.pkl', 'rb') as f:
                 datasets[category] = pickle.load(f)
         else:
-            datasets[category] = MyDataset(filepaths=filepaths[category])
+            datasets[category] = TrafficSignsDataset(filepaths=filepaths[category])
             # dump
             tqdm.write(f'writing {category} dataset to pickle file..')
             with open(f'{data_dir}/{category}.pkl', 'wb') as f:
@@ -70,7 +71,7 @@ if __name__ == "__main__":
     val_loader = DataLoader(datasets['val'], batch_size=batch_size, shuffle=True)
 
     # model
-    model = MyConvNet(num_classes=num_classes)
+    model = TrafficSignsConvNet(num_classes=num_classes, dropout=dropout_prob)
 
     # transfer model to device
     model = model.to(device)

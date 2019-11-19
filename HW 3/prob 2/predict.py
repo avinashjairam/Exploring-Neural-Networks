@@ -7,8 +7,8 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 import dill as pickle
 
-from data_utils import MyDataset
-from model_utils import MyConvNet
+from data_utils import TrafficSignsDataset
+from model_utils import TrafficSignsConvNet
 from training_utils import (
     load_checkpoint,
     validate,
@@ -46,7 +46,7 @@ if __name__ == "__main__":
             with open(f'{data_dir}/{category}.pkl', 'rb') as f:
                 datasets[category] = pickle.load(f)
         else:
-            datasets[category] = MyDataset(filepaths=filepaths[category])
+            datasets[category] = TrafficSignsDataset(filepaths=filepaths[category])
             # dump
             tqdm.write(f'writing {category} dataset to pickle file..')
             with open(f'{data_dir}/{category}.pkl', 'wb') as f:
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     test_loader = DataLoader(datasets['test'], batch_size=batch_size, shuffle=True)
 
     # model
-    model = MyConvNet(num_classes=num_classes)
+    model = TrafficSignsConvNet(num_classes=num_classes)
 
     # transfer model to device
     model = model.to(device)

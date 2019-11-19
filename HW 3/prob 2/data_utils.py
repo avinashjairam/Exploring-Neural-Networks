@@ -5,7 +5,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 
 
-class MyDataset(Dataset):
+class TrafficSignsDataset(Dataset):
     def __init__(self, filepaths):
         self.filepaths = filepaths
 
@@ -79,4 +79,4 @@ if __name__ == "__main__":
         "data/gtsrb-german-traffic-sign/Train/17/00017_00000_00002.png",
         "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00011.png"
     ]
-    dataset = MyDataset(filepaths=filepaths)
+    dataset = TrafficSignsDataset(filepaths=filepaths)
