@@ -23,8 +23,10 @@ if __name__ == "__main__":
     batch_size = 64
     dropout_prob = 0.3
     data_dir = "data/gtsrb-german-traffic-sign/Train"
-    ckpt_dir = "models/adam_optimizer"
+    optimizer_name = 'SGD_with_nesterov'  # options: 'adam', 'SGD_with_nesterov'
+    ckpt_dir = f"models/SGD_with_nesterov_optimizer_dropout0.3"
 
+    # create logger
     logger = {
         'train losses': [],
         'val losses': [],
@@ -83,10 +85,20 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
 
     # optimizer
-    optimizer = optim.Adam(
-        [p for p in model.parameters() if p.requires_grad],
-        lr=learning_rate
-    )
+    if optimizer_name == 'adam':
+        optimizer = optim.Adam(
+            [p for p in model.parameters() if p.requires_grad],
+            lr=learning_rate
+        )
+    elif optimizer_name == 'SGD_with_nesterov':
+        optimizer = optim.SGD(
+            [p for p in model.parameters() if p.requires_grad],
+            lr=learning_rate,
+            momentum=0.9,
+            nesterov=True
+        )
+    else:
+        raise NotImplemented(f'{optimizer_name}')
 
     best_val_acc = -1
     best_epoch = -1
