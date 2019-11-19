@@ -57,7 +57,7 @@ def train(
         tot_loss = tot_loss + loss.item()
 
         # update tqdm meter
-        tqdm_meter.set_postfix()  # TODO
+        tqdm_meter.set_postfix(ordered_dict={"loss": f"{loss.item():0.4f}"})
         tqdm_meter.update()
 
         # backward
@@ -132,7 +132,7 @@ def validate(
             tot_loss = tot_loss + loss.item()
 
             # update tqdm meter
-            tqdm_meter.set_postfix()  # TODO
+            tqdm_meter.set_postfix(ordered_dict={"loss": f"{loss.item():0.4f}"})
             tqdm_meter.update()
 
             # compute prediction
@@ -151,8 +151,8 @@ def validate(
     acc = (100 * corrects) / total  # accuracy in percentage
 
     # print
-    tqdm.write(f'[- val] loss: {av_loss:0.4f}, '
-               f'acc: {acc:0.2f} %')
+    tqdm.write(f'\t(val) loss: {av_loss:0.4f}, '
+               f'acc: {acc:0.2f} %\n')
 
     return av_loss, acc
 
