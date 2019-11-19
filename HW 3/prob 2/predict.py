@@ -80,7 +80,7 @@ if __name__ == "__main__":
         f'(6) best val accuracy so far '
         f' is {state["best val acc so far"]:0.2f}%\n'
         f'(7) the best val accuracy so far '
-        f'was obtained after {state["best epoch so far"]} epochs'
+        f'was obtained after {state["best epoch so far"]} epochs\n'
     )
 
     # predict
