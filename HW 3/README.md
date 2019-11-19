@@ -10,7 +10,7 @@ then apply
 - [ ] data augmentation
 - [ ] batch normalization
 - [ ] learning rate scheduler
-- [ ] tune dropout: 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8
+- [ ] tune dropout: ```0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8```
 
 (c) choose best model from (b).
 then
