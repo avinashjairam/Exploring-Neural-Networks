@@ -111,7 +111,7 @@ if __name__ == "__main__":
         logger['val accs'].append(val_acc)
 
         if val_acc >= best_val_acc:
-            tqdm.write('    - found new best validation accuracy')
+            tqdm.write('    - found new best validation accuracy\n')
             best_val_acc = val_acc
             best_epoch = epoch
             is_best = True
