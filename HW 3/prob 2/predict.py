@@ -68,6 +68,7 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
 
     # load checkpoint
+    tqdm.write(f'loading checkpoint {ckpt_path}')
     state = load_checkpoint(ckpt_path, model, device=device)
 
     tqdm.write(
