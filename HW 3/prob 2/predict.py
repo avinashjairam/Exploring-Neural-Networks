@@ -17,17 +17,13 @@ from training_utils import (
 
 if __name__ == "__main__":
 
-    num_classes = 20
+    num_classes = 5
     batch_size = 64
-    data_dir = "data"
+    data_dir = "data/gtsrb-german-traffic-sign/Train"
     ckpt_path = "models/adam_optimizer/best.pt"
 
     # set device
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-
-    # set random seed
-    torch.manual_seed(123) if device == torch.device('cuda:0') \
-        else torch.cuda.manual_seed(123)
 
     # data file paths
     filepaths = {}
@@ -80,9 +76,9 @@ if __name__ == "__main__":
         f'(3) val loss using this checkpoint is {state["val loss"]:0.4f}\n'
         f'(4) train accuracy using this checkpoint is {state["train acc"]:0.2f} %\n'
         f'(5) val accuracy using this checkpoint is {state["val acc"]:0.2f} %\n'
-        f'(6) best val accuracy so far till this checkpoint was created'
+        f'(6) best val accuracy so far '
         f' is {state["best val acc so far"]:0.2f}%\n'
-        f'(7) the best val accuracy so far till this checkpoint was created'
+        f'(7) the best val accuracy so far '
         f'was obtained after {state["best epoch so far"]} epochs'
     )
 
