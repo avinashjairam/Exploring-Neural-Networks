@@ -3,7 +3,7 @@ from torch import nn, optim
 from tqdm import tqdm
 import codecs
 import os
-import pickle
+import dill as pickle
 
 from torch.utils.data import DataLoader
 from model_utils import MyConvNet
@@ -17,11 +17,11 @@ from training_utils import (
 
 if __name__ == "__main__":
 
-    num_classes = 20
+    num_classes = 5
     num_epochs = 10
     learning_rate = 1e-3
     batch_size = 64
-    data_dir = "data"
+    data_dir = "data/gtsrb-german-traffic-sign/Train"
     ckpt_dir = "models/adam_optimizer"
 
     logger = {
