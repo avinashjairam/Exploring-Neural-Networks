@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     # set random seed
     torch.manual_seed(123) if device == torch.device('cuda:0') \
-        else torch.cuda.manual_seed(123)
+        else torch.cuda.manual_seed_all(123)
 
     # data file paths
     filepaths = {}
