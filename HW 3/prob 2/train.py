@@ -18,7 +18,7 @@ from training_utils import (
 if __name__ == "__main__":
 
     num_classes = 5
-    num_epochs = 10
+    num_epochs = 20
     learning_rate = 1e-3
     batch_size = 64
     data_dir = "data/gtsrb-german-traffic-sign/Train"
@@ -33,6 +33,7 @@ if __name__ == "__main__":
 
     # set device
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    tqdm.write(f'device: {device}')
 
     # set random seed
     torch.manual_seed(123) if device == torch.device('cuda:0') \
