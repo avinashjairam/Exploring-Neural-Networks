@@ -9,9 +9,26 @@ class MyDataset(Dataset):
     def __init__(self, filepaths):
         self.filepaths = filepaths
 
-        self.class_to_idx = {
-            f'{no}': no for no in range(42 + 1)
-        }
+        groupA = [0, 1, 2, 3, 4, 5, 7, 8]
+        groupB = [6, 9, 10, 16, 23, 29, 32, 41, 42]
+        groupC = [14, 15, 17, 18, 22, 25, 30, 31]
+        groupD = [11, 12, 13, 19, 20, 21, 24, 26, 27, 28]
+        groupE = [33, 34, 35, 36, 37, 38, 39, 40]
+
+        self.class_to_idx = {}
+        for orig_class_id in range(0, 42 + 1):
+            if orig_class_id in groupA:
+                self.class_to_idx[f'{orig_class_id}'] = 0
+            elif orig_class_id in groupB:
+                self.class_to_idx[f'{orig_class_id}'] = 1
+            elif orig_class_id in groupC:
+                self.class_to_idx[f'{orig_class_id}'] = 2
+            elif orig_class_id in groupD:
+                self.class_to_idx[f'{orig_class_id}'] = 3
+            elif orig_class_id in groupE:
+                self.class_to_idx[f'{orig_class_id}'] = 4
+            else:
+                raise NotImplemented
 
         self.transform = transforms.Compose(
             [
@@ -59,6 +76,7 @@ if __name__ == "__main__":
         "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00008.png",
         "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00009.png",
         "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00010.png",
+        "data/gtsrb-german-traffic-sign/Train/17/00017_00000_00002.png",
         "data/gtsrb-german-traffic-sign/Train/1/00001_00000_00011.png"
     ]
     dataset = MyDataset(filepaths=filepaths)
