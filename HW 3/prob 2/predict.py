@@ -6,6 +6,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 import dill as pickle
+import argparse
 
 from data_utils import TrafficSignsDataset
 from model_utils import TrafficSignsConvNet
@@ -17,11 +18,22 @@ from training_utils import (
 
 if __name__ == "__main__":
 
-    num_classes = 5
-    batch_size = 64
-    data_dir = "data/gtsrb-german-traffic-sign/Train"
-    ckpt_path = "models/testing/best.pt"
-    use_batch_norm = True
+    # get args
+    parser = argparse.ArgumentParser(description='train convnet')
+    parser.add_argument('--data-dir', type=str, default="data/gtsrb-german-traffic-sign/Train")
+    parser.add_argument('--ckpt-path', type=str, default="models/testing/best.pt")
+    parser.add_argument('--batch-size', type=int, default=64)
+    parser.add_argument('--num-classes', type=int, default=5)
+    parser.add_argument('--use-batch-norm', action='store_true', default=False)
+
+    # parse args
+    args = parser.parse_args()
+
+    # print args
+    tqdm.write('{')
+    for k, v in args.__dict__.items():
+        tqdm.write('\t{}: {}'.format(k, v))
+    tqdm.write('}')
 
     # set device
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -30,7 +42,7 @@ if __name__ == "__main__":
     # data file paths
     filepaths = {}
     for category in ['test']:
-        with codecs.open(os.path.join(data_dir, f'{category}.txt'),
+        with codecs.open(os.path.join(args.data_dir, f'{category}.txt'),
                          'r', encoding='utf-8') as f:
             filepaths[category] = list(map(str.strip, f.readlines()))
 
@@ -41,25 +53,25 @@ if __name__ == "__main__":
     # datasets
     datasets = {}
     for category in ['test']:
-        if os.path.exists(f'{data_dir}/{category}.pkl'):
+        if os.path.exists(f'{args.data_dir}/{category}.pkl'):
             # load dataset from pickle file
             tqdm.write(f'loading {category} dataset from pickle file..')
-            with open(f'{data_dir}/{category}.pkl', 'rb') as f:
+            with open(f'{args.data_dir}/{category}.pkl', 'rb') as f:
                 datasets[category] = pickle.load(f)
         else:
             datasets[category] = TrafficSignsDataset(filepaths=filepaths[category])
             # dump
             tqdm.write(f'writing {category} dataset to pickle file..')
-            with open(f'{data_dir}/{category}.pkl', 'wb') as f:
+            with open(f'{args.data_dir}/{category}.pkl', 'wb') as f:
                 pickle.dump(datasets[category], f)
 
     # data loader
-    test_loader = DataLoader(datasets['test'], batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(datasets['test'], batch_size=args.batch_size, shuffle=True)
 
     # model
     model = TrafficSignsConvNet(
-        num_classes=num_classes,
-        batch_norm=use_batch_norm
+        num_classes=args.num_classes,
+        batch_norm=args.use_batch_norm
     )
 
     # transfer model to device
@@ -72,8 +84,8 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
 
     # load checkpoint
-    tqdm.write(f'loading checkpoint {ckpt_path}')
-    state = load_checkpoint(ckpt_path, model, device=device)
+    tqdm.write(f'loading checkpoint {args.ckpt_path}')
+    state = load_checkpoint(args.ckpt_path, model, device=device)
 
     tqdm.write(
         f'some info on the loaded checkpoint:\n'

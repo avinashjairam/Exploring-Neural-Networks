@@ -4,6 +4,7 @@ from tqdm import tqdm
 import codecs
 import os
 import dill as pickle
+import argparse
 
 from torch.utils.data import DataLoader
 from model_utils import TrafficSignsConvNet
@@ -17,17 +18,30 @@ from training_utils import (
 
 if __name__ == "__main__":
 
-    num_classes = 5
-    num_epochs = 50
-    learning_rate = 1e-3
-    batch_size = 64
-    dropout_prob = 0.3
-    data_dir = "data/gtsrb-german-traffic-sign/Train"
-    optimizer_name = 'adam'  # options: 'adam', 'SGD_with_nesterov'
-    ckpt_dir = f"models/testing"
-    use_xavier = True
-    use_batch_norm = True
-    use_lr_scheduler = True
+    # get args
+    parser = argparse.ArgumentParser(description='train convnet')
+    parser.add_argument('--data-dir', type=str, default="data/gtsrb-german-traffic-sign/Train")
+    parser.add_argument('--ckpt-dir', type=str, default="models/testing")
+    parser.add_argument('--optimizer-name', type=str, default='adam',
+                        help='options: {"adam", "SGD_with_nesterov"}')
+    parser.add_argument('--batch-size', type=int, default=64)
+    parser.add_argument('--num-epochs', type=int, default=30)
+    parser.add_argument('--dropout-prob', type=float, default=0.3)
+    parser.add_argument('--learning-rate', type=float, default=1e-3)
+    parser.add_argument('--num-classes', type=int, default=5)
+    parser.add_argument('--use-xavier-init', action='store_true', default=False)
+    parser.add_argument('--use-batch-norm', action='store_true', default=False)
+    parser.add_argument('--use-lr-scheduler', action='store_true', default=False)
+    parser.add_argument('--seed', type=int, default=123, help='random seed (default: 123)')
+
+    # parse args
+    args = parser.parse_args()
+
+    # print args
+    tqdm.write('{')
+    for k, v in args.__dict__.items():
+        tqdm.write('\t{}: {}'.format(k, v))
+    tqdm.write('}')
 
     # create logger
     logger = {
@@ -42,13 +56,13 @@ if __name__ == "__main__":
     tqdm.write(f'device: {device}')
 
     # set random seed
-    torch.manual_seed(123) if device == torch.device('cuda:0') \
-        else torch.cuda.manual_seed_all(123)
+    torch.manual_seed(args.seed) if device == torch.device('cuda:0') \
+        else torch.cuda.manual_seed_all(args.seed)
 
     # data file paths
     filepaths = {}
     for category in ['train', 'val']:
-        with codecs.open(os.path.join(data_dir, f'{category}.txt'),
+        with codecs.open(os.path.join(args.data_dir, f'{category}.txt'),
                          'r', encoding='utf-8') as f:
             filepaths[category] = list(map(str.strip, f.readlines()))
 
@@ -59,28 +73,28 @@ if __name__ == "__main__":
     # datasets
     datasets = {}
     for category in ['train', 'val']:
-        if os.path.exists(f'{data_dir}/{category}.pkl'):
+        if os.path.exists(f'{args.data_dir}/{category}.pkl'):
             # load dataset from pickle file
             tqdm.write(f'loading {category} dataset from pickle file..')
-            with open(f'{data_dir}/{category}.pkl', 'rb') as f:
+            with open(f'{args.data_dir}/{category}.pkl', 'rb') as f:
                 datasets[category] = pickle.load(f)
         else:
             datasets[category] = TrafficSignsDataset(filepaths=filepaths[category])
             # dump
             tqdm.write(f'writing {category} dataset to pickle file..')
-            with open(f'{data_dir}/{category}.pkl', 'wb') as f:
+            with open(f'{args.data_dir}/{category}.pkl', 'wb') as f:
                 pickle.dump(datasets[category], f)
 
     # data loaders
-    train_loader = DataLoader(datasets['train'], batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(datasets['val'], batch_size=batch_size, shuffle=True)
+    train_loader = DataLoader(datasets['train'], batch_size=args.batch_size, shuffle=True)
+    val_loader = DataLoader(datasets['val'], batch_size=args.batch_size, shuffle=True)
 
     # model
     model = TrafficSignsConvNet(
-        num_classes=num_classes,
-        batch_norm=use_batch_norm,
-        dropout=dropout_prob,
-        xavier=use_xavier
+        num_classes=args.num_classes,
+        batch_norm=args.use_batch_norm,
+        dropout=args.dropout_prob,
+        xavier=args.use_xavier_init
     )
 
     # transfer model to device
@@ -93,22 +107,22 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
 
     # optimizer
-    if optimizer_name == 'adam':
+    if args.optimizer_name == 'adam':
         optimizer = optim.Adam(
             [p for p in model.parameters() if p.requires_grad],
-            lr=learning_rate
+            lr=args.learning_rate
         )
-    elif optimizer_name == 'SGD_with_nesterov':
+    elif args.optimizer_name == 'SGD_with_nesterov':
         optimizer = optim.SGD(
             [p for p in model.parameters() if p.requires_grad],
-            lr=learning_rate,
+            lr=args.learning_rate,
             momentum=0.9,
             nesterov=True
         )
     else:
-        raise NotImplemented(f'{optimizer_name}')
+        raise NotImplemented(f'{args.optimizer_name}')
 
-    if use_lr_scheduler:
+    if args.use_lr_scheduler:
         scheduler = optim.lr_scheduler.ReduceLROnPlateau(
             optimizer, mode='max', factor=0.5, patience=0, verbose=True  # mode 'max' to maximize val acc
         )
@@ -117,12 +131,12 @@ if __name__ == "__main__":
     best_epoch = -1
     # train for epochs
     tqdm.write('training..')
-    for epoch in range(1, num_epochs + 1):
+    for epoch in range(1, args.num_epochs + 1):
         # train
         train_loss, train_acc = train(
             model, train_loader,
             criterion, optimizer,
-            epoch, num_epochs, device
+            epoch, args.num_epochs, device
         )
         # validate
         val_loss, val_acc = validate(
@@ -157,17 +171,17 @@ if __name__ == "__main__":
             'best epoch so far': best_epoch
         }
 
-        if use_lr_scheduler:
+        if args.use_lr_scheduler:
             # adjust learning rate
             scheduler.step(val_acc, epoch=epoch)
             state['scheduler_dict'] = scheduler.state_dict()
 
         # save state
-        save_checkpoint(state, is_best, ckpt_dir)
+        save_checkpoint(state, is_best, args.ckpt_dir)
 
     # save logger
     tqdm.write('dumping logger to pickle file..')
-    with open(f'{ckpt_dir}/logger.pkl', 'wb') as f:
+    with open(f'{args.ckpt_dir}/logger.pkl', 'wb') as f:
         pickle.dump(logger, f)
 
     tqdm.write(f'max validation accuracy {best_val_acc:0.2f} % '
