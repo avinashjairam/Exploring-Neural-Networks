@@ -8,7 +8,7 @@ import argparse
 
 from torch.utils.data import DataLoader
 from model_utils import TrafficSignsConvNet
-from data_utils import TrafficSignsDataset
+from data_utils import TrafficSignsDataset, TrafficSignsAugmentedDataset
 from training_utils import (
     save_checkpoint,
     train,
@@ -29,6 +29,7 @@ if __name__ == "__main__":
     parser.add_argument('--dropout-prob', type=float, default=0.3)
     parser.add_argument('--learning-rate', type=float, default=1e-3)
     parser.add_argument('--num-classes', type=int, default=5)
+    parser.add_argument('--use-data-augmentation', action='store_true', default=False)
     parser.add_argument('--use-xavier-init', action='store_true', default=False)
     parser.add_argument('--use-batch-norm', action='store_true', default=False)
     parser.add_argument('--use-lr-scheduler', action='store_true', default=False)
@@ -73,16 +74,28 @@ if __name__ == "__main__":
     # datasets
     datasets = {}
     for category in ['train', 'val']:
-        if os.path.exists(f'{args.data_dir}/{category}.pkl'):
+        if category == 'train' and args.use_data_augmentation:
+            pickle_filename = 'train_withaug'
+        else:
+            pickle_filename = category
+        if os.path.exists(f'{args.data_dir}/{pickle_filename}.pkl'):
             # load dataset from pickle file
             tqdm.write(f'loading {category} dataset from pickle file..')
-            with open(f'{args.data_dir}/{category}.pkl', 'rb') as f:
+            with open(f'{args.data_dir}/{pickle_filename}.pkl', 'rb') as f:
                 datasets[category] = pickle.load(f)
         else:
-            datasets[category] = TrafficSignsDataset(filepaths=filepaths[category])
+            if category == 'train' and args.use_data_augmentation:
+                datasets[category] = TrafficSignsAugmentedDataset(
+                    filepaths=filepaths[category]
+                )
+            else:
+                datasets[category] = TrafficSignsDataset(
+                    filepaths=filepaths[category]
+                )
+
             # dump
             tqdm.write(f'writing {category} dataset to pickle file..')
-            with open(f'{args.data_dir}/{category}.pkl', 'wb') as f:
+            with open(f'{args.data_dir}/{pickle_filename}.pkl', 'wb') as f:
                 pickle.dump(datasets[category], f)
 
     # data loaders
