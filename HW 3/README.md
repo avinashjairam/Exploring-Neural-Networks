@@ -13,7 +13,7 @@ then
 - [x] (iii) add xavier initialization
 - [x] (iv) vary dropout: ```0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8```
 - [x] (v) add learning rate scheduler
-- [ ] (vi) show confusion matrix
+- [x] (vi) show confusion matrix
 
 (c) use the model with batch norm, data augmentation, xavier init, best dropout prob and learning rate scheduler, and
 
