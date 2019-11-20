@@ -19,4 +19,4 @@ then
 
 - [x] (i) show four randomly augmented images from each class
 - [ ] (ii) visualize activations of conv layer channels for two images
-- [ ] (iii) visualize learned conv filters
+- [x] (iii) visualize learned conv filters
