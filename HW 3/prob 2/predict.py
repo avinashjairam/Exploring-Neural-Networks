@@ -128,7 +128,6 @@ if __name__ == "__main__":
             cbar=False
         )
 
-        plt.tight_layout()
         # set x and y labels
         plt.xlabel('True Classes')
         plt.ylabel('Predicted Classes')
