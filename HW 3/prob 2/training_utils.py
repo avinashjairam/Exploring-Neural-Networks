@@ -31,7 +31,7 @@ def train(
     # progress meter
     tqdm_meter = tqdm(
         data_loader,
-        desc=f'[Epoch {curr_epoch}/{tot_epochs}]',
+        desc=f'🏍️[Epoch {curr_epoch}/{tot_epochs}]🏍️',
         unit=' batches',
         leave=False
     )
