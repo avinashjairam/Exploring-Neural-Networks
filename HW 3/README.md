@@ -1,6 +1,6 @@
 ## Problem 2
 
-display training and validation losses and accuracies for each training
+- [x] display training and validation losses and accuracies for each training
 
 (a) train CNN (make sure to apply dataset normalization and dropout)
 - [x] (i) adam optimizer
