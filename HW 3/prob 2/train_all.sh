@@ -48,7 +48,7 @@ done
 
 # add learning rate scheduler
 CUDA_VISIBLE_DEVICES=0 python train.py \
-     --ckpt-dir models/adam_batchnorm_dataaug_xavier_dropout0.3 \
+     --ckpt-dir models/adam_batchnorm_dataaug_xavier_lrscheduler_dropout0.3 \
      --optimizer-name adam \
      --use-batch-norm \
      --use-data-augmentation \
