@@ -20,7 +20,8 @@ if __name__ == "__main__":
     num_classes = 5
     batch_size = 64
     data_dir = "data/gtsrb-german-traffic-sign/Train"
-    ckpt_path = "models/adam_optimizer/best.pt"
+    ckpt_path = "models/testing/best.pt"
+    use_batch_norm = True
 
     # set device
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -56,7 +57,10 @@ if __name__ == "__main__":
     test_loader = DataLoader(datasets['test'], batch_size=batch_size, shuffle=True)
 
     # model
-    model = TrafficSignsConvNet(num_classes=num_classes)
+    model = TrafficSignsConvNet(
+        num_classes=num_classes,
+        batch_norm=use_batch_norm
+    )
 
     # transfer model to device
     model = model.to(device)

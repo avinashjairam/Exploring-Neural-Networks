@@ -18,13 +18,15 @@ from training_utils import (
 if __name__ == "__main__":
 
     num_classes = 5
-    num_epochs = 30
+    num_epochs = 5
     learning_rate = 1e-3
     batch_size = 64
     dropout_prob = 0.3
     data_dir = "data/gtsrb-german-traffic-sign/Train"
-    optimizer_name = 'SGD_with_nesterov'  # options: 'adam', 'SGD_with_nesterov'
-    ckpt_dir = f"models/SGD_with_nesterov_optimizer_dropout0.3"
+    optimizer_name = 'adam'  # options: 'adam', 'SGD_with_nesterov'
+    ckpt_dir = f"models/testing"
+    use_xavier = True
+    use_batch_norm = True
 
     # create logger
     logger = {
@@ -73,7 +75,12 @@ if __name__ == "__main__":
     val_loader = DataLoader(datasets['val'], batch_size=batch_size, shuffle=True)
 
     # model
-    model = TrafficSignsConvNet(num_classes=num_classes, dropout=dropout_prob)
+    model = TrafficSignsConvNet(
+        num_classes=num_classes,
+        batch_norm=use_batch_norm,
+        dropout=dropout_prob,
+        xavier=use_xavier
+    )
 
     # transfer model to device
     model = model.to(device)
