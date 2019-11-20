@@ -1,21 +1,22 @@
 ## Problem 2
 
+display training and validation losses and accuracies for each training
+
 (a) train CNN (make sure to apply dataset normalization and dropout)
-- [ ] (i) adam optimizer
-- [ ] (ii) SGD with nesterov momentum
+- [x] (i) adam optimizer
+- [x] (ii) SGD with nesterov momentum
 
 (b) choose best model from (a).
-then apply
-- [ ] xavier initialization
-- [ ] data augmentation
-- [ ] batch normalization
-- [ ] tune dropout: ```0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8```
-- [ ] learning rate scheduler
-
-(c) choose best model from (b).
 then
+- [x] (i) add batch normalization
+- [x] (ii) add data augmentation
+- [x] (iii) add xavier initialization
+- [x] (iv) vary dropout: ```0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8```
+- [x] (v) add learning rate scheduler
+- [ ] (vi) show confusion matrix for just (v)
 
-- [ ] (i) display training and validation losses and accuracies
-- [ ] (ii) show four randomly augmented images from each class
-- [ ] (iii) visualize activations of conv layer channels for two images
-- [ ] (iv) visualize learned conv filters
+(c) use the model with batch norm, data augmentation, xavier init, best dropout prob and learning rate scheduler, and
+
+- [ ] (i) show four randomly augmented images from each class
+- [ ] (ii) visualize activations of conv layer channels for two images
+- [ ] (iii) visualize learned conv filters
