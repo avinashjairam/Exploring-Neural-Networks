@@ -18,7 +18,7 @@ from training_utils import (
 if __name__ == "__main__":
 
     num_classes = 5
-    num_epochs = 5
+    num_epochs = 50
     learning_rate = 1e-3
     batch_size = 64
     dropout_prob = 0.3
@@ -27,6 +27,7 @@ if __name__ == "__main__":
     ckpt_dir = f"models/testing"
     use_xavier = True
     use_batch_norm = True
+    use_lr_scheduler = True
 
     # create logger
     logger = {
@@ -107,6 +108,11 @@ if __name__ == "__main__":
     else:
         raise NotImplemented(f'{optimizer_name}')
 
+    if use_lr_scheduler:
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer, mode='max', factor=0.5, patience=0, verbose=True  # mode 'max' to maximize val acc
+        )
+
     best_val_acc = -1
     best_epoch = -1
     # train for epochs
@@ -150,6 +156,11 @@ if __name__ == "__main__":
             'best val acc so far': best_val_acc,
             'best epoch so far': best_epoch
         }
+
+        if use_lr_scheduler:
+            # adjust learning rate
+            scheduler.step(val_acc, epoch=epoch)
+            state['scheduler_dict'] = scheduler.state_dict()
 
         # save state
         save_checkpoint(state, is_best, ckpt_dir)
