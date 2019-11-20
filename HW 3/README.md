@@ -9,8 +9,8 @@ then apply
 - [ ] xavier initialization
 - [ ] data augmentation
 - [ ] batch normalization
-- [ ] learning rate scheduler
 - [ ] tune dropout: ```0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8```
+- [ ] learning rate scheduler
 
 (c) choose best model from (b).
 then
