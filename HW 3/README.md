@@ -17,6 +17,6 @@ then
 
 (c) use the model with batch norm, data augmentation, xavier init, best dropout prob and learning rate scheduler, and
 
-- [ ] (i) show four randomly augmented images from each class
+- [x] (i) show four randomly augmented images from each class
 - [ ] (ii) visualize activations of conv layer channels for two images
 - [ ] (iii) visualize learned conv filters
