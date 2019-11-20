@@ -91,7 +91,8 @@ def validate(
         model,
         data_loader,
         criterion,
-        device=torch.device('cpu')
+        device=torch.device('cpu'),
+        predictions_labels_lists=False
 ):
     """
     validate
@@ -99,7 +100,8 @@ def validate(
     :param data_loader: (torch.data.Dataloader) data loader
     :param criterion: (torch.nn.module) criterion
     :param device: (torch.device) device (default: torch.device('cpu'))
-    :return: val loss, val acc
+    :param predictions_labels_lists: (bool) return predictions and labels in lists or not (default: False)
+    :return: val loss, val acc (also preds list and labels list if predictions_labels_lists is True)
     """
 
     # set model to eval mode
@@ -116,6 +118,9 @@ def validate(
     corrects = 0
     total = 0
     tot_loss = 0
+
+    if predictions_labels_lists:
+        preds_list, labels_list = [], []
 
     with torch.no_grad():
         for batch_idx, (image, label) in enumerate(tqdm_meter):
@@ -141,6 +146,11 @@ def validate(
             # compute number of correct predictions and update corrects
             corrects = corrects + (pred == label).sum().item()
 
+            if predictions_labels_lists:
+                # add to preds list
+                preds_list.extend(pred.detach().cpu().tolist())
+                labels_list.extend(label.detach().cpu().tolist())
+
             # update total
             total = total + label.shape[0]
 
@@ -154,7 +164,10 @@ def validate(
     tqdm.write(f'\t(val) loss: {av_loss:0.4f}, '
                f'acc: {acc:0.2f} %\n')
 
-    return av_loss, acc
+    if predictions_labels_lists:
+        return av_loss, acc, preds_list, labels_list
+    else:
+        return av_loss, acc
 
 
 def save_checkpoint(state, is_best, checkpoint_dir):

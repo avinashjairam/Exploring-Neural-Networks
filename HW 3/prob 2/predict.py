@@ -1,5 +1,8 @@
 import codecs
 import os
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 
 import torch
 from torch import nn
@@ -25,6 +28,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch-size', type=int, default=64)
     parser.add_argument('--num-classes', type=int, default=5)
     parser.add_argument('--use-batch-norm', action='store_true', default=False)
+    parser.add_argument('--plot-confusion-matrix', action='store_true', default=False)
 
     # parse args
     args = parser.parse_args()
@@ -66,7 +70,7 @@ if __name__ == "__main__":
                 pickle.dump(datasets[category], f)
 
     # data loader
-    test_loader = DataLoader(datasets['test'], batch_size=args.batch_size, shuffle=True)
+    test_loader = DataLoader(datasets['test'], batch_size=args.batch_size, shuffle=False)
 
     # model
     model = TrafficSignsConvNet(
@@ -101,7 +105,31 @@ if __name__ == "__main__":
     )
 
     # predict
-    test_loss, test_acc = validate(model, test_loader, criterion, device)
+    if args.plot_confusion_matrix:
+        test_loss, test_acc, test_preds, test_labels = validate(model, test_loader, criterion, device, True)
+    else:
+        test_loss, test_acc = validate(model, test_loader, criterion, device, False)
 
     # print results
     tqdm.write(f'test loss: {test_loss:0.4f}, test acc: {test_acc:0.2f} %')
+
+    if args.plot_confusion_matrix:
+        group_names = ['A', 'B', 'C', 'D', 'E']
+        conf_mat = confusion_matrix(y_true=test_labels, y_pred=test_preds)
+        plt.figure(figsize=(3, 3), dpi=160)
+        # plot matrix
+        sns.heatmap(
+            conf_mat,
+            cmap=plt.cm.Oranges,
+            square=True,  # shape of each cell is a square (arr need not be a square matrix)
+            annot=True,  # annotate cells
+            xticklabels=group_names,
+            yticklabels=group_names,
+            cbar=False
+        )
+
+        plt.tight_layout()
+        # set x and y labels
+        plt.xlabel('True Classes')
+        plt.ylabel('Predicted Classes')
+        plt.show()
