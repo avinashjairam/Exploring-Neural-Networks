@@ -60,7 +60,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py \
 for seed in "98" "99" "100" "101" "102"
 do
     CUDA_VISIBLE_DEVICES=0 python train.py \
-         --ckpt-dir models/adam_optimizer_dropout0.3 \
+         --ckpt-dir models/adam_optimizer_dropout0.3_seed$seed \
          --optimizer-name adam \
          --seed $seed | tee logs/adam_dropout0.3_seed$seed.txt
 done
