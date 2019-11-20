@@ -1,0 +1,196 @@
+{
+	data_dir: data/gtsrb-german-traffic-sign/Train
+	ckpt_dir: models/SGD_with_nesterov_optimizer_dropout0.3
+	optimizer_name: SGD_with_nesterov
+	batch_size: 64
+	num_epochs: 30
+	dropout_prob: 0.3
+	learning_rate: 0.001
+	num_classes: 5
+	use_data_augmentation: False
+	use_xavier_init: False
+	use_batch_norm: False
+	use_lr_scheduler: False
+	seed: 123
+}
+device: cuda:0
+number of samples:
+train: 25000
+val: 1000
+loading train dataset from pickle file..
+loading val dataset from pickle file..
+-----------------------------------------------------------------------------------------
+model:
+-----------------------------------------------------------------------------------------
+TrafficSignsConvNet(
+  (conv1): Conv2d(3, 6, kernel_size=(5, 5), stride=(1, 1))
+  (relu1): ReLU()
+  (pool1): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (dropout1): Dropout2d(p=0.3)
+  (conv2): Conv2d(6, 12, kernel_size=(5, 5), stride=(1, 1))
+  (relu2): ReLU()
+  (pool2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (dropout2): Dropout2d(p=0.3)
+  (conv3): Conv2d(12, 18, kernel_size=(5, 5), stride=(1, 1))
+  (relu3): ReLU()
+  (pool3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (dropout3): Dropout2d(p=0.3)
+  (conv4): Conv2d(18, 24, kernel_size=(5, 5), stride=(1, 1))
+  (relu4): ReLU()
+  (pool4): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (dropout4): Dropout2d(p=0.3)
+  (fc1): Linear(in_features=384, out_features=256, bias=True)
+  (reluf1): ReLU()
+  (fc2): Linear(in_features=256, out_features=64, bias=True)
+  (reluf2): ReLU()
+  (fc3): Linear(in_features=64, out_features=5, bias=True)
+)
+-----------------------------------------------------------------------------------------
+number of trainable params: 133843
+-----------------------------------------------------------------------------------------
+training..
+[Epoch 1/30] loss: 1.6107, acc: 20.00 %
+	(val) loss: 1.6098, acc: 20.00 %
+
+    - found new best validation accuracy
+
+Checkpoint Directory does not exist! Making directory models/SGD_with_nesterov_optimizer_dropout0.3
+[Epoch 2/30] loss: 1.6095, acc: 20.66 %
+	(val) loss: 1.6092, acc: 20.00 %
+
+    - found new best validation accuracy
+
+[Epoch 3/30] loss: 1.6093, acc: 20.66 %
+	(val) loss: 1.6091, acc: 21.30 %
+
+    - found new best validation accuracy
+
+[Epoch 4/30] loss: 1.6090, acc: 21.77 %
+	(val) loss: 1.6089, acc: 22.70 %
+
+    - found new best validation accuracy
+
+[Epoch 5/30] loss: 1.6087, acc: 22.64 %
+	(val) loss: 1.6085, acc: 29.20 %
+
+    - found new best validation accuracy
+
+[Epoch 6/30] loss: 1.6083, acc: 24.11 %
+	(val) loss: 1.6078, acc: 28.40 %
+
+[Epoch 7/30] loss: 1.6075, acc: 24.82 %
+	(val) loss: 1.6061, acc: 31.00 %
+
+    - found new best validation accuracy
+
+[Epoch 8/30] loss: 1.6049, acc: 26.97 %
+	(val) loss: 1.5990, acc: 31.50 %
+
+    - found new best validation accuracy
+
+[Epoch 9/30] loss: 1.5788, acc: 28.87 %
+	(val) loss: 1.4838, acc: 41.80 %
+
+    - found new best validation accuracy
+
+[Epoch 10/30] loss: 1.2393, acc: 51.95 %
+	(val) loss: 0.8081, acc: 72.50 %
+
+    - found new best validation accuracy
+
+[Epoch 11/30] loss: 0.8124, acc: 72.21 %
+	(val) loss: 0.5615, acc: 80.40 %
+
+    - found new best validation accuracy
+
+[Epoch 12/30] loss: 0.6390, acc: 78.57 %
+	(val) loss: 0.4214, acc: 85.30 %
+
+    - found new best validation accuracy
+
+[Epoch 13/30] loss: 0.5257, acc: 82.49 %
+	(val) loss: 0.3028, acc: 87.60 %
+
+    - found new best validation accuracy
+
+[Epoch 14/30] loss: 0.4458, acc: 85.06 %
+	(val) loss: 0.2817, acc: 88.50 %
+
+    - found new best validation accuracy
+
+[Epoch 15/30] loss: 0.3937, acc: 87.10 %
+	(val) loss: 0.2110, acc: 92.30 %
+
+    - found new best validation accuracy
+
+[Epoch 16/30] loss: 0.3502, acc: 88.28 %
+	(val) loss: 0.1838, acc: 93.40 %
+
+    - found new best validation accuracy
+
+[Epoch 17/30] loss: 0.3146, acc: 89.70 %
+	(val) loss: 0.1734, acc: 94.40 %
+
+    - found new best validation accuracy
+
+[Epoch 18/30] loss: 0.2805, acc: 90.51 %
+	(val) loss: 0.1579, acc: 94.70 %
+
+    - found new best validation accuracy
+
+[Epoch 19/30] loss: 0.2613, acc: 91.60 %
+	(val) loss: 0.1411, acc: 95.10 %
+
+    - found new best validation accuracy
+
+[Epoch 20/30] loss: 0.2425, acc: 92.12 %
+	(val) loss: 0.1345, acc: 95.30 %
+
+    - found new best validation accuracy
+
+[Epoch 21/30] loss: 0.2278, acc: 92.74 %
+	(val) loss: 0.1407, acc: 95.60 %
+
+    - found new best validation accuracy
+
+[Epoch 22/30] loss: 0.2116, acc: 93.00 %
+	(val) loss: 0.1102, acc: 96.50 %
+
+    - found new best validation accuracy
+
+[Epoch 23/30] loss: 0.1995, acc: 93.59 %
+	(val) loss: 0.1135, acc: 96.30 %
+
+[Epoch 24/30] loss: 0.1925, acc: 93.87 %
+	(val) loss: 0.1013, acc: 96.50 %
+
+    - found new best validation accuracy
+
+[Epoch 25/30] loss: 0.1790, acc: 94.37 %
+	(val) loss: 0.1000, acc: 96.40 %
+
+[Epoch 26/30] loss: 0.1707, acc: 94.56 %
+	(val) loss: 0.1093, acc: 96.80 %
+
+    - found new best validation accuracy
+
+[Epoch 27/30] loss: 0.1618, acc: 94.95 %
+	(val) loss: 0.0914, acc: 96.90 %
+
+    - found new best validation accuracy
+
+[Epoch 28/30] loss: 0.1578, acc: 95.10 %
+	(val) loss: 0.0789, acc: 97.50 %
+
+    - found new best validation accuracy
+
+[Epoch 29/30] loss: 0.1476, acc: 95.17 %
+	(val) loss: 0.0850, acc: 97.50 %
+
+    - found new best validation accuracy
+
+[Epoch 30/30] loss: 0.1408, acc: 95.54 %
+	(val) loss: 0.0841, acc: 97.30 %
+
+dumping logger to pickle file..
+max validation accuracy 97.50 % was obtained after 29 epochs
