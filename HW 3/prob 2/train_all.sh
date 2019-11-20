@@ -45,12 +45,22 @@ do
          --dropout-prob $p | tee logs/adam_batchnorm_dataaug_xavier_dropout$p.txt
 done
 
-for seed in "99" "100" "101"
+
+# add learning rate scheduler
+CUDA_VISIBLE_DEVICES=0 python train.py \
+     --ckpt-dir models/adam_batchnorm_dataaug_xavier_dropout0.3 \
+     --optimizer-name adam \
+     --use-batch-norm \
+     --use-data-augmentation \
+     --use-xavier-init \
+     --use-lr-scheduler \
+     --dropout-prob 0.2 | tee logs/adam_batchnorm_dataaug_xavier_lrscheduler_dropout0.2.txt
+
+
+for seed in "98" "99" "100" "101" "102"
 do
     CUDA_VISIBLE_DEVICES=0 python train.py \
          --ckpt-dir models/adam_optimizer_dropout0.3 \
          --optimizer-name adam \
-         --seed $seed | tee logs/adam_dropout0.3_$seed.txt
+         --seed $seed | tee logs/adam_dropout0.3_seed$seed.txt
 done
-
-# add learning rate scheduler
