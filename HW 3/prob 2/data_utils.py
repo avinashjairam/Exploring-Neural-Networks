@@ -43,6 +43,12 @@ class TrafficSignsDataset(Dataset):
             image = Image.open(filepath)  # PIL image
 
             # resize to 128 x 128
+            """
+            NOTE: resizing can also be done using 
+            transforms.Resize(size=(128,128)). that
+            probably will not require explicit 
+            conversion of RGBA images to RGB images.
+            """
             image = image.resize((128, 128), PIL.Image.ANTIALIAS)
 
             # convert to RGB
