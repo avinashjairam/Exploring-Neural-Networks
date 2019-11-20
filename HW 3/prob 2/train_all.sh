@@ -4,25 +4,25 @@
 # adam optimizer
 CUDA_VISIBLE_DEVICES=0 python train.py \
      --ckpt-dir models/adam_optimizer_dropout0.3 \
-     --optimizer-name adam | tee logs/parta_adam_dropout0.3.txt
+     --optimizer-name adam | tee logs/adam_dropout0.3.txt
 
 # SGD with nesterov optimizer
 CUDA_VISIBLE_DEVICES=0 python train.py \
      --ckpt-dir models/SGD_with_nesterov_optimizer_dropout0.3 \
-     --optimizer-name SGD_with_nesterov | tee logs/parta_SGD_with_nesterov_dropout0.3.txt
+     --optimizer-name SGD_with_nesterov | tee logs/SGD_with_nesterov_dropout0.3.txt
 
 # batchnorm
 CUDA_VISIBLE_DEVICES=0 python train.py \
      --ckpt-dir models/adam_batchnorm_dropout0.3 \
      --optimizer-name adam \
-     --use-batch-norm | tee logs/parta_adam_batchnorm_dropout0.3.txt
+     --use-batch-norm | tee logs/adam_batchnorm_dropout0.3.txt
 
 # add data augmentation
 CUDA_VISIBLE_DEVICES=0 python train.py \
      --ckpt-dir models/adam_batchnorm_dataaug_dropout0.3 \
      --optimizer-name adam \
      --use-batch-norm \
-     --use-data-augmentation | tee logs/parta_adam_batchnorm_dataaug_dropout0.3.txt
+     --use-data-augmentation | tee logs/adam_batchnorm_dataaug_dropout0.3.txt
 
 # add xavier initialization
 CUDA_VISIBLE_DEVICES=0 python train.py \
@@ -30,7 +30,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py \
      --optimizer-name adam \
      --use-batch-norm \
      --use-data-augmentation \
-     --use-xavier-init | tee logs/parta_adam_batchnorm_dataaug_xavier_dropout0.3.txt
+     --use-xavier-init | tee logs/adam_batchnorm_dataaug_xavier_dropout0.3.txt
 
 
 # tune dropout
@@ -42,7 +42,7 @@ do
          --use-batch-norm \
          --use-data-augmentation \
          --use-xavier-init \
-         --dropout-prob $p | tee logs/parta_adam_batchnorm_dataaug_xavier_dropout$p.txt
+         --dropout-prob $p | tee logs/adam_batchnorm_dataaug_xavier_dropout$p.txt
 done
 
 for seed in "99" "100" "101"
@@ -50,7 +50,7 @@ do
     CUDA_VISIBLE_DEVICES=0 python train.py \
          --ckpt-dir models/adam_optimizer_dropout0.3 \
          --optimizer-name adam \
-         --seed $seed | tee logs/parta_adam_dropout0.3_$seed.txt
+         --seed $seed | tee logs/adam_dropout0.3_$seed.txt
 done
 
 # add learning rate scheduler
