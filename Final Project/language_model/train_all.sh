@@ -15,3 +15,15 @@ CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 300 --nh
 CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 100 --nhid 100 --dropout 0.5 --tied --model LSTM --epochs 40 --save models/lstm_emsize100_dropout0.5_tied.pt | tee logs/lstm_emsize100_dropout0.5_tied.txt
 CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 200 --nhid 200 --dropout 0.5 --tied --model LSTM --epochs 40 --save models/lstm_emsize200_dropout0.5_tied.pt | tee logs/lstm_emsize200_dropout0.5_tied.txt
 CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 300 --nhid 300 --dropout 0.5 --tied --model LSTM --epochs 40 --save models/lstm_emsize300_dropout0.5_tied.pt | tee logs/lstm_emsize300_dropout0.5_tied.txt
+
+CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 100 --nhid 100 --dropout 0.6 --tied --model LSTM --epochs 40 --save models/lstm_emsize100_dropout0.6_tied.pt | tee logs/lstm_emsize100_dropout0.6_tied.txt
+CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 200 --nhid 200 --dropout 0.6 --tied --model LSTM --epochs 40 --save models/lstm_emsize200_dropout0.6_tied.pt | tee logs/lstm_emsize200_dropout0.6_tied.txt
+CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 300 --nhid 300 --dropout 0.6 --tied --model LSTM --epochs 40 --save models/lstm_emsize300_dropout0.6_tied.pt | tee logs/lstm_emsize300_dropout0.6_tied.txt
+
+CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 100 --nhid 100 --dropout 0.7 --tied --model LSTM --epochs 40 --save models/lstm_emsize100_dropout0.7_tied.pt | tee logs/lstm_emsize100_dropout0.7_tied.txt
+CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 200 --nhid 200 --dropout 0.7 --tied --model LSTM --epochs 40 --save models/lstm_emsize200_dropout0.7_tied.pt | tee logs/lstm_emsize200_dropout0.7_tied.txt
+CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 300 --nhid 300 --dropout 0.7 --tied --model LSTM --epochs 40 --save models/lstm_emsize300_dropout0.7_tied.pt | tee logs/lstm_emsize300_dropout0.7_tied.txt
+
+CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 100 --nhid 100 --dropout 0.8 --tied --model LSTM --epochs 40 --save models/lstm_emsize100_dropout0.8_tied.pt | tee logs/lstm_emsize100_dropout0.8_tied.txt
+CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 200 --nhid 200 --dropout 0.8 --tied --model LSTM --epochs 40 --save models/lstm_emsize200_dropout0.8_tied.pt | tee logs/lstm_emsize200_dropout0.8_tied.txt
+CUDA_VISIBLE_DEVICES=0 python train.py --cuda --batch_size 256 --emsize 300 --nhid 300 --dropout 0.8 --tied --model LSTM --epochs 40 --save models/lstm_emsize300_dropout0.8_tied.pt | tee logs/lstm_emsize300_dropout0.8_tied.txt

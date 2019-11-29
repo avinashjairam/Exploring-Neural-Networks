@@ -24,7 +24,7 @@ sys.stdout.flush()
 torch.manual_seed(args.seed)
 if torch.cuda.is_available():
     if not args.cuda:
-        print("WARNING: You have a CUDA device, so you should probably run with --cuda")
+        tqdm.write("WARNING: You have a CUDA device, so you should probably run with --cuda")
 
 device = torch.device("cuda" if args.cuda else "cpu")
 
@@ -32,7 +32,7 @@ device = torch.device("cuda" if args.cuda else "cpu")
 # Load data
 ###############################################################################
 
-print('loading data..')
+tqdm.write('loading data..')
 if os.path.exists(os.path.join(args.data, 'corpus.pkl')):
     with open(os.path.join(args.data, 'corpus.pkl'), 'rb') as f:
         corpus = pickle.load(f)
@@ -68,7 +68,17 @@ else:
     model = model_utils.RNNModel(args.model, ntokens, args.emsize, args.nhid, args.nlayers, args.dropout, args.tied).to(
         device)
 
-# save the model to disk
+tqdm.write(89 * '-')
+tqdm.write('model:')
+tqdm.write(89 * '-')
+tqdm.write(str(model))
+tqdm.write(89 * '-')
+tqdm.write(f'num params: '
+           f'{sum(p.numel() for p in model.parameters() if p.requires_grad)}')
+tqdm.write(89 * '-')
+sys.stdout.flush()
+
+# save the model (not trained yet) to disk
 with open(args.save, 'wb') as f:
     torch.save(model, f)
 
@@ -124,7 +134,10 @@ def evaluate(data_source):
             loss = criterion(output_flat, targets)
             total_loss += len(data) * loss.item()
             # update tqdm meter
-            tqdm_meter.set_postfix(loss=f'{loss.item():0.4f}')
+            tqdm_meter.set_postfix(
+                loss=f'{loss.item():0.4f}',
+                ppl=f'{math.exp(loss.item()):0.2f}'
+            )
             tqdm_meter.update()
 
     return total_loss / (len(data_source) - 1)
@@ -140,7 +153,8 @@ def train():
         hidden = model.init_hidden(args.batch_size)
 
     tqdm_meter = tqdm(range(0, train_data.size(0) - 1, args.bptt),
-                      desc=f'[EPOCH {epoch}/{args.epochs}]', unit=' batches', leave=False)
+                      desc=f'[EPOCH {epoch}/{args.epochs}]',
+                      unit=' batches', leave=False)
     for batch, i in enumerate(tqdm_meter):
         data, targets = get_batch(train_data, i)
         # Starting each batch, we detach the hidden state from how it was previously produced.
@@ -159,11 +173,16 @@ def train():
         for p in model.parameters():
             p.data.add_(-lr, p.grad.data)
 
-        total_loss += loss.item()
+        total_loss += len(data) * loss.item()
 
         # update tqdm meter
-        tqdm_meter.set_postfix(loss=f'{loss.item():0.4f}', ppl=f'{math.exp(loss.item()):0.2f}')
+        tqdm_meter.set_postfix(
+            loss=f'{loss.item():0.4f}',
+            ppl=f'{math.exp(loss.item()):0.2f}'
+        )
         tqdm_meter.update()
+
+    return total_loss / (len(train_data) - 1)
 
 
 # Loop over epochs.
@@ -172,15 +191,19 @@ best_val_loss = None
 
 # At any point you can hit Ctrl + C to break out of training early.
 try:
-    print('starting training..')
+    tqdm.write('starting training..')
     for epoch in range(1, args.epochs + 1):
         epoch_start_time = time.time()
-        train()
+        train_loss = train()
         val_loss = evaluate(val_data)
         tqdm.write('-' * 89)
-        tqdm.write('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
-                   'valid ppl {:8.2f}'.format(epoch, (time.time() - epoch_start_time),
-                                              val_loss, math.exp(val_loss)))
+        tqdm.write('| end of epoch {:3d} | time: {:5.2f}s | '
+                   'train loss {:5.2f} | train ppl {:8.2f} | '
+                   'val loss {:5.2f} | val ppl {:8.2f}'
+                   .format(epoch, (time.time() - epoch_start_time),
+                           train_loss, math.exp(train_loss),
+                           val_loss, math.exp(val_loss))
+                   )
         tqdm.write('-' * 89)
         sys.stdout.flush()
         # Save the model if the validation loss is the best we've seen so far.
