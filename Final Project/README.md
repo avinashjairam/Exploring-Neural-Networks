@@ -7,7 +7,7 @@
 
 - [x] print test loss and ppl using best hyperparam model
 
-- [ ] generate sequences using best hyperparam model
+- [x] generate sequences using best hyperparam model
 
 - [ ] analyze embeddings
   - [ ] nearest 10 words and furthest 10 words
