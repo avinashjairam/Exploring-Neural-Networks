@@ -30,7 +30,7 @@ class Corpus(object):
         """Tokenizes a text file."""
         assert os.path.exists(path)
         # Add words to the dictionary
-        num_lines = sum(1 for line in open(path, 'r', encoding='utf-8'))
+        num_lines = sum(1 for _ in open(path, 'r', encoding='utf-8'))
         with open(path, 'r', encoding="utf8") as f:
             for line in tqdm(f, total=num_lines, unit=' lines', desc=f'build dict'):
                 words = line.split() + ['<eos>']
