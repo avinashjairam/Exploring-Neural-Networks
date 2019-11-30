@@ -2,7 +2,7 @@
 
 - [x] code language model using LSTM
 - [x] tune hyperparams (emb size, dropout)
-- [ ] plot train and val curves (both loss and ppl)
+- [x] plot train and val curves (both loss and ppl)
 - [ ] plot for hyperparams (multi-bar plot)
 
 - [ ] print test loss and ppl using best hyperparam model
