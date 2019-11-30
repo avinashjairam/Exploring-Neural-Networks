@@ -9,12 +9,14 @@ import os
 import torch
 import dill as pickle
 import args_utils
-from tqdm import tqdm
+import warnings
+
+warnings.filterwarnings('ignore')
 
 # get args
 args = args_utils.get_args_generate()
 
-# Set the random seed manually for reproducibility.
+# Set the random seed manually for reproducibility
 torch.manual_seed(args.seed)
 if torch.cuda.is_available():
     if not args.cuda:
@@ -23,7 +25,7 @@ if torch.cuda.is_available():
 device = torch.device("cuda" if args.cuda else "cpu")
 
 with open(args.checkpoint, 'rb') as f:
-    model = torch.load(f).to(device)
+    model = torch.load(f, map_location=device)
 model.eval()
 
 if os.path.exists(os.path.join(args.data, 'corpus.pkl')):
@@ -39,21 +41,23 @@ if not is_transformer_model:
     hidden = model.init_hidden(1)
 input = torch.randint(ntokens, (1, 1), dtype=torch.long).to(device)
 
-with open(args.outf, 'w', encoding='utf-8') as outf:
-    with torch.no_grad():  # no tracking history
-        for i in tqdm(range(args.words), unit=' words', desc='generating', leave=False):
-            if is_transformer_model:
-                output = model(input, False)
-                word_weights = output[-1].squeeze().div(args.temperature).exp().cpu()
-                word_idx = torch.multinomial(word_weights, 1)[0]
-                word_tensor = torch.Tensor([[word_idx]]).long().to(device)
-                input = torch.cat([input, word_tensor], 0)
-            else:
-                output, hidden = model(input, hidden)
-                word_weights = output.squeeze().div(args.temperature).exp().cpu()
-                word_idx = torch.multinomial(word_weights, 1)[0]
-                input.fill_(word_idx)
+generated = ''
+with torch.no_grad():  # no tracking history
+    for i in range(args.words):
+        if is_transformer_model:
+            output = model(input, False)
+            word_weights = output[-1].squeeze().div(args.temperature).exp().cpu()
+            word_idx = torch.multinomial(word_weights, 1)[0]
+            word_tensor = torch.Tensor([[word_idx]]).long().to(device)
+            input = torch.cat([input, word_tensor], 0)
+        else:
+            output, hidden = model(input, hidden)
+            word_weights = output.squeeze().div(args.temperature).exp().cpu()
+            word_idx = torch.multinomial(word_weights, 1)[0]
+            input.fill_(word_idx)
 
-            word = corpus.dictionary.idx2word[word_idx]
+        word = corpus.dictionary.idx2word[word_idx]
 
-            outf.write(word + ('\n' if i % 20 == 19 else ' '))
+        generated = generated + (word + ' ' if word != '<eos>' else '\n')
+
+print(generated)
