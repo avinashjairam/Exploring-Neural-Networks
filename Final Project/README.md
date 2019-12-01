@@ -10,7 +10,7 @@
 - [x] generate sequences using best hyperparam model
 
 - [ ] analyze embeddings
-  - [ ] nearest 10 words and furthest 10 words
-  - [ ] UMAP
-  - [ ] visualize all words (not sure how it will look)
-  - [ ] visualize hand picked words
+  - [x] nearest 10 words and furthest 10 words
+  - [ ] UMAP -- trying..
+  - [x] visualize 500 words
+  - [x] visualize hand picked words
