@@ -11,6 +11,6 @@
 
 - [x] analyze embeddings
   - [x] nearest 10 words and furthest 10 words
-  - [trying..] UMAP
+  - [x] UMAP
   - [x] visualize 500 words
   - [x] visualize hand picked words
