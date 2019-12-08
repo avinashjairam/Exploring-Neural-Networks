@@ -5,6 +5,7 @@
 #
 ###############################################################################
 
+#We are writing our own data loading code. Hence, we are not importing data, unlike, the code we referenced.
 import os
 import torch
 import dill as pickle
@@ -13,6 +14,7 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
+#We are changing the arguments and thus defining our own way of utlizing the arguments
 # get args
 args = args_utils.get_args_generate()
 
@@ -23,6 +25,9 @@ if torch.cuda.is_available():
         print("WARNING: You have a CUDA device, so you should probably run with --cuda")
 
 device = torch.device("cuda" if args.cuda else "cpu")
+
+#The code referenced restricted training and generating to either only the CPU or the GPU. We added the following f
+#code to allow us to run the training and generation on any device.
 
 with open(args.checkpoint, 'rb') as f:
     model = torch.load(f, map_location=device)
@@ -59,5 +64,6 @@ with torch.no_grad():  # no tracking history
         word = corpus.dictionary.idx2word[word_idx]
 
         generated = generated + (word + ' ' if word != '<eos>' else '\n')
-
+#The reference code doesn't do any post processing. However, we did so that we do not produce any
+#end of sentence tokens which are meaningless in the context of language. 
 print(generated)
